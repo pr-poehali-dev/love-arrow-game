@@ -2,6 +2,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { shareApp } from '@/lib/vkAuth';
+import VKAuthButton from './VKAuthButton';
 
 type Page = 'lobby' | 'game' | 'profile' | 'shop' | 'gifts';
 
@@ -11,6 +13,7 @@ interface GameLobbyProps {
   username: string;
   onNavigate: (page: Page) => void;
   onSelectTable: (tableNumber: number) => void;
+  isVKApp?: boolean;
 }
 
 export default function GameLobby({ 
@@ -18,7 +21,8 @@ export default function GameLobby({
   isVIP, 
   username, 
   onNavigate, 
-  onSelectTable 
+  onSelectTable,
+  isVKApp = false
 }: GameLobbyProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-500 via-purple-600 to-red-600 p-4">
@@ -125,16 +129,30 @@ export default function GameLobby({
         </div>
 
         <footer className="bg-white/10 backdrop-blur-md rounded-3xl p-6 text-center text-white shadow-xl border border-white/20">
-          <p className="mb-3 text-lg">Вступайте в нашу группу ВКонтакте</p>
-          <a 
-            href="https://vk.ru/arrow_love" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full font-bold transition-colors"
-          >
-            <Icon name="Heart" size={20} />
-            vk.ru/arrow_love
-          </a>
+          <p className="mb-4 text-lg">Вступайте в нашу группу ВКонтакте</p>
+          
+          {isVKApp ? (
+            <VKAuthButton isVKApp={isVKApp} />
+          ) : (
+            <div className="flex items-center justify-center gap-4">
+              <a 
+                href="https://vk.ru/arrow_love" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full font-bold transition-colors"
+              >
+                <Icon name="Heart" size={20} />
+                vk.ru/arrow_love
+              </a>
+              <Button
+                onClick={shareApp}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-full font-bold"
+              >
+                <Icon name="Share2" className="mr-2" size={20} />
+                Поделиться
+              </Button>
+            </div>
+          )}
         </footer>
       </div>
     </div>

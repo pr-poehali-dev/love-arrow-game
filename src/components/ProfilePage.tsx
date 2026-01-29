@@ -2,19 +2,22 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { VKUser } from '@/lib/vkAuth';
 
 interface ProfilePageProps {
   onBack: () => void;
   hearts: number;
   isVIP: boolean;
   username: string;
+  vkUser?: VKUser | null;
 }
 
 export default function ProfilePage({ 
   onBack, 
   hearts, 
   isVIP,
-  username 
+  username,
+  vkUser
 }: ProfilePageProps) {
   const stats = {
     gamesPlayed: Math.floor(Math.random() * 100),
@@ -36,8 +39,12 @@ export default function ProfilePage({
 
         <Card className="bg-white/10 backdrop-blur-md border-2 border-white/30 p-8 shadow-2xl mb-6 animate-fade-in">
           <div className="flex items-center gap-6 mb-8">
-            <div className="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-5xl shadow-xl">
-              👤
+            <div className="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-5xl shadow-xl overflow-hidden">
+              {vkUser?.photo_100 ? (
+                <img src={vkUser.photo_100} alt={username} className="w-full h-full object-cover" />
+              ) : (
+                '👤'
+              )}
             </div>
             <div>
               <h2 className="text-4xl font-black text-white mb-2">{username}</h2>

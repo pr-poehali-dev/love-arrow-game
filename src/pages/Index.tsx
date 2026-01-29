@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GameLobby from '@/components/GameLobby';
 import GameTable from '@/components/GameTable';
 import ProfilePage from '@/components/ProfilePage';
 import ShopPage from '@/components/ShopPage';
 import GiftsPage from '@/components/GiftsPage';
+import { initVK, getUserInfo, checkIfVKApp, VKUser } from '@/lib/vkAuth';
 
 type Page = 'lobby' | 'game' | 'profile' | 'shop' | 'gifts';
 
@@ -12,7 +13,25 @@ export default function Index() {
   const [selectedTable, setSelectedTable] = useState<number>(1);
   const [hearts, setHearts] = useState(100);
   const [isVIP, setIsVIP] = useState(false);
-  const [username] = useState('Игрок' + Math.floor(Math.random() * 9999));
+  const [username, setUsername] = useState('Игрок' + Math.floor(Math.random() * 9999));
+  const [vkUser, setVkUser] = useState<VKUser | null>(null);
+  const [isVKApp] = useState(checkIfVKApp());
+
+  useEffect(() => {
+    const loadVKData = async () => {
+      if (isVKApp) {
+        const initialized = await initVK();
+        if (initialized) {
+          const user = await getUserInfo();
+          if (user) {
+            setVkUser(user);
+            setUsername(user.first_name + ' ' + user.last_name);
+          }
+        }
+      }
+    };
+    loadVKData();
+  }, [isVKApp]);
 
   const handleSelectTable = (tableNumber: number) => {
     setSelectedTable(tableNumber);
@@ -35,6 +54,7 @@ export default function Index() {
         username={username}
         onNavigate={setCurrentPage}
         onSelectTable={handleSelectTable}
+        isVKApp={isVKApp}
       />
     );
   }
@@ -58,6 +78,7 @@ export default function Index() {
         hearts={hearts} 
         isVIP={isVIP}
         username={username}
+        vkUser={vkUser}
       />
     );
   }
